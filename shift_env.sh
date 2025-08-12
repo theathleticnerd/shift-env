@@ -30,9 +30,7 @@ print_error() {
 }
 
 print_header() {
-    # echo -e "${BLUE}================================${NC}"
     echo -e "${BLUE}$1 :${NC}"
-    # echo -e "${BLUE}================================${NC}"
 }
 
 # Function to detect current staging environment
@@ -85,7 +83,7 @@ perform_shift() {
     
     # Restart nginx to apply the configuration changes
     print_status "Restarting nginx service..."
-    if brew services restart nginx; then
+    if restart_nginx; then
         print_status "Nginx service restarted successfully"
     else
         print_warning "Failed to restart nginx service. You may need to restart it manually."
@@ -111,7 +109,7 @@ show_arrow_menu() {
     # Function to display menu
     display_menu() {
         clear
-        print_header "Staging Environment Selection (Arrow Keys + Enter)"
+        print_header "Synup Staging Environment Selection (Arrow Keys + Enter)"
         echo ""
         echo "Use ↑↓ arrow keys to navigate, Enter to select, q to quit"
         echo ""
@@ -233,6 +231,20 @@ show_interactive_menu() {
     
     print_status "Selected environment: $selected_env"
     perform_shift "$selected_env"
+}
+
+# Function to restart nginx based on installation method
+restart_nginx() {
+    # Check if nginx is installed via Homebrew
+    if [ -f "/opt/homebrew/bin/nginx" ]; then
+        print_status "Nginx detected as Homebrew installation, restarting via brew services..."
+        brew services restart nginx
+        return $?
+    else
+        print_status "Nginx not found as Homebrew installation, reloading via sudo..."
+        sudo nginx -s reload
+        return $?
+    fi
 }
 
 # Function to show current status
