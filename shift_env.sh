@@ -3,7 +3,10 @@
 # Script to shift staging environments in synup.conf
 # Available staging environments: dev1-1, dev1-2, dev2-1, dev2-2, dev3-1, dev5-1
 
-CONFIG_FILE="/opt/homebrew/etc/nginx/servers/synup.conf"
+# Allow custom config file path via environment variable
+# Use environment variable if set, otherwise default to /opt/homebrew/etc/nginx/servers/synup.conf
+CONFIG_FILE="${SYNUP_CONFIG_FILE:-/opt/homebrew/etc/nginx/servers/synup.conf}" 
+
 CURRENT_ENV=""
 
 # Available staging environments
